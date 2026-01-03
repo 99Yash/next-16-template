@@ -11,7 +11,7 @@ A production-ready Next.js 16 template with authentication, database setup, and 
 - 📦 **shadcn/ui** components
 - 🌓 **Dark mode** support
 - ✅ **TypeScript** with strict type checking
-- 🧪 **Type-safe environment variables** with Zod validation
+- 🧪 **Type-safe environment variables** with [T3 Env](https://env.t3.gg) and Zod
 - 🔒 **Security middleware** with security headers
 - 📊 **Vercel Analytics** integration
 - 🎯 **Error boundaries** and error handling
@@ -124,19 +124,31 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## Environment Variables
 
-All environment variables are validated on application startup using Zod. See `.env.example` for required variables.
+All environment variables are validated using [T3 Env](https://env.t3.gg) with Zod schemas. This provides type-safe environment variables with automatic validation. See `.env.example` for required variables.
 
-### Required Variables
+T3 Env automatically:
+
+- Separates server and client-side environment variables
+- Validates variables on application startup
+- Provides TypeScript autocomplete for env variables
+- Prevents accidental exposure of server variables to the client
+
+### Server Variables (Required)
 
 - `DATABASE_URL` - PostgreSQL connection string
 - `BETTER_AUTH_SECRET` - Secret key for Better Auth (min 32 characters)
+
+### Server Variables (Optional)
+
 - `BETTER_AUTH_URL` - Base URL for auth API (defaults to `NEXT_PUBLIC_APP_URL`)
-- `NEXT_PUBLIC_APP_URL` - Public application URL
-
-### Optional Variables
-
 - `GOOGLE_CLIENT_ID` - Google OAuth client ID
 - `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+
+### Client Variables (Optional)
+
+- `NEXT_PUBLIC_APP_URL` - Public application URL (accessible on both client and server)
+
+**Note**: Set `SKIP_ENV_VALIDATION=true` to skip validation during builds if needed (e.g., for CI/CD pipelines where env vars are set at runtime).
 
 ## Authentication
 
@@ -185,7 +197,7 @@ The template uses [Drizzle ORM](https://orm.drizzle.team/) with PostgreSQL. Data
 
 The template includes security best practices:
 
-- Security headers via middleware (CSP, HSTS, etc.)
+- Security headers via middleware (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS)
 - Environment variable validation
 - Type-safe database queries
 - Error boundary for graceful error handling

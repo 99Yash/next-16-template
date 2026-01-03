@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(_request: NextRequest) {
   const response = NextResponse.next();
 
   response.headers.set('X-Frame-Options', 'DENY');
@@ -10,6 +10,21 @@ export function middleware(request: NextRequest) {
   response.headers.set(
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=()'
+  );
+  response.headers.set(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob:",
+      "font-src 'self'",
+      "connect-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      'upgrade-insecure-requests',
+    ].join('; ')
   );
 
   if (process.env.NODE_ENV === 'production') {
